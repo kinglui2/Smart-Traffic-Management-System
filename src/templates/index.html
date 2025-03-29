@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Smart Traffic Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+.camera-container {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 Aspect Ratio */
+    background-color: #000;
+    overflow: hidden;
+}
+
+.camera-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.signal-state {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.signal-state.red { background-color: #dc3545; }
+.signal-state.yellow { background-color: #ffc107; }
+.signal-state.green { background-color: #28a745; }
+.signal-state.flashing { background-color: #ffc107; animation: flash 1s infinite; }
+
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.vehicle-count {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Traffic Camera Feed -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-video"></i> Traffic Camera Feed
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="camera-container">
+                    <img id="cameraFeed" src="" alt="Traffic Camera Feed" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Traffic Information -->
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle"></i> Traffic Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="trafficInfo">
+                    <div class="mb-3">
+                        <h6><i class="fas fa-car"></i> Vehicle Counts</h6>
+                        <div id="vehicleCounts">
+                            <!-- Vehicle counts will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6><i class="fas fa-traffic-light"></i> Signal States</h6>
+                        <div id="signalStates">
+                            <!-- Signal states will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Emergency Controls -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Emergency Controls
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-danger" id="ambulanceBtn">
+                        <i class="fas fa-ambulance"></i> Emergency Vehicle (Ambulance)
+                    </button>
+                    <button class="btn btn-danger" id="fireTruckBtn">
+                        <i class="fas fa-truck"></i> Emergency Vehicle (Fire Truck)
+                    </button>
+                    <button class="btn btn-danger" id="policeBtn">
+                        <i class="fas fa-shield-alt"></i> Emergency Vehicle (Police)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line"></i> Traffic Analytics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="signalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Emergency Modal -->
+{% include 'emergency_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Initialize charts
+const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+const signalCtx = document.getElementById('signalChart').getContext('2d');
+
+const trafficChart = new Chart(trafficCtx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Total Vehicles',
+            data: [],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const signalChart = new Chart(signalCtx, {
+    type: 'bar',
+    data: {
+        labels: ['North-South', 'East-West'],
+        datasets: [{
+            label: 'Green Time (seconds)',
+            data: [0, 0],
+            backgroundColor: 'rgba(40, 167, 69, 0.5)'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Socket.IO connection
+const socket = io();
+
+// Handle system updates
+socket.on('system_update', function(data) {
+    updateTrafficInfo(data);
+    updateCharts(data);
+});
+
+// Update traffic information
+function updateTrafficInfo(data) {
+    // Update vehicle counts
+    const vehicleCountsDiv = document.getElementById('vehicleCounts');
+    vehicleCountsDiv.innerHTML = '';
+    
+    Object.entries(data.traffic.vehicle_counts).forEach(([lane, count]) => {
+        const countDiv = document.createElement('div');
+        countDiv.className = 'vehicle-count';
+        countDiv.textContent = `${lane}: ${count} vehicles`;
+        vehicleCountsDiv.appendChild(countDiv);
+    });
+    
+    // Update signal states
+    const signalStatesDiv = document.getElementById('signalStates');
+    signalStatesDiv.innerHTML = '';
+    
+    Object.entries(data.signals.states).forEach(([signal, state]) => {
+        const stateDiv = document.createElement('div');
+        stateDiv.className = 'mb-2';
+        
+        const indicator = document.createElement('span');
+        indicator.className = `signal-state ${state}`;
+        
+        const label = document.createElement('span');
+        label.textContent = `${signal}: ${state}`;
+        
+        stateDiv.appendChild(indicator);
+        stateDiv.appendChild(label);
+        signalStatesDiv.appendChild(stateDiv);
+    });
+}
+
+// Update charts
+function updateCharts(data) {
+    // Update traffic chart
+    const timestamp = new Date(data.timestamp).toLocaleTimeString();
+    const totalVehicles = Object.values(data.traffic.vehicle_counts).reduce((a, b) => a + b, 0);
+    
+    trafficChart.data.labels.push(timestamp);
+    trafficChart.data.datasets[0].data.push(totalVehicles);
+    
+    // Keep only last 10 data points
+    if (trafficChart.data.labels.length > 10) {
+        trafficChart.data.labels.shift();
+        trafficChart.data.datasets[0].data.shift();
+    }
+    
+    trafficChart.update();
+    
+    // Update signal chart
+    Object.entries(data.signals.timing).forEach(([signal, timing], index) => {
+        signalChart.data.datasets[0].data[index] = timing.duration;
+    });
+    
+    signalChart.update();
+}
+
+// Emergency vehicle buttons
+document.getElementById('ambulanceBtn').addEventListener('click', function() {
+    socket.emit('emergency_vehicle', { type: 'ambulance' });
+});
+
+document.getElementById('fireTruckBtn').addEventListener('click', function() {
+    socket.emit('emergency_vehicle', { type: 'fire_truck' });
+});
+
+document.getElementById('policeBtn').addEventListener('click', function() {
+    socket.emit('emergency_vehicle', { type: 'police' });
+});
+</script>
+{% endblock %} 

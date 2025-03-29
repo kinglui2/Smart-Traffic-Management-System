@@ -1,3 +1,161 @@
+# Smart Traffic Management System
+
+A real-time traffic management system that uses computer vision and machine learning to optimize traffic flow and handle emergency vehicle scenarios.
+
+## Features
+
+- Real-time vehicle detection using YOLOv8
+- Lane-based traffic monitoring
+- Adaptive traffic signal control
+- Emergency vehicle priority system
+- Real-time web dashboard
+- Traffic analytics and visualization
+- Responsive design for all devices
+
+## Prerequisites
+
+- Python 3.8 or higher
+- OpenCV
+- YOLOv8
+- Flask
+- Flask-SocketIO
+- NumPy
+- Other dependencies listed in requirements.txt
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/Smart-Traffic-Management-System.git
+cd Smart-Traffic-Management-System
+```
+
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Download the YOLOv8 model:
+```bash
+# The model will be downloaded automatically on first run
+```
+
+## Project Structure
+
+```
+Smart-Traffic-Management-System/
+├── src/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── config.py
+│   ├── traffic_monitor.py
+│   ├── car_detection.py
+│   └── traffic_control/
+│       ├── __init__.py
+│       └── signal_controller.py
+├── src/templates/
+│   ├── base.html
+│   ├── index.html
+│   └── emergency_modal.html
+├── src/static/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       └── main.js
+├── logs/
+├── requirements.txt
+└── README.md
+```
+
+## Configuration
+
+The system can be configured through the `src/config.py` file. Key settings include:
+
+- Camera settings (resolution, FPS)
+- Lane definitions and priorities
+- Traffic signal timing
+- Emergency vehicle handling
+- Analytics settings
+
+## Usage
+
+1. Start the system:
+```bash
+python -m src.main
+```
+
+2. Open a web browser and navigate to:
+```
+http://localhost:5000
+```
+
+3. The dashboard will show:
+- Live traffic camera feed
+- Vehicle counts per lane
+- Traffic signal states
+- Emergency controls
+- Traffic analytics
+
+## Emergency Vehicle Handling
+
+The system provides priority handling for emergency vehicles:
+
+1. Click the "Emergency Mode" button in the navigation bar
+2. Select the type of emergency vehicle:
+   - Ambulance
+   - Fire Truck
+   - Police Vehicle
+3. The system will:
+   - Set all signals to flashing yellow
+   - Maintain emergency mode for the configured duration
+   - Return to normal operation automatically
+
+## Development
+
+### Adding New Features
+
+1. Create new modules in the `src` directory
+2. Update the configuration in `src/config.py`
+3. Modify the web interface templates as needed
+4. Update the main application to integrate new features
+
+### Testing
+
+Run tests using:
+```bash
+python -m pytest tests/
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- YOLOv8 for object detection
+- OpenCV for computer vision
+- Flask for web framework
+- Bootstrap for UI components
+- Chart.js for data visualization
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the maintainers.
+
 # Smart-Traffic-Management-System
 Project Implementation Steps:
 

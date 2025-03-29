@@ -1,0 +1,100 @@
+/* Traffic Grid Layout */
+.traffic-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 1rem;
+}
+
+/* Signal Container */
+.signal-container {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+/* Traffic Light */
+.traffic-light {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem auto;
+    width: 80px;
+}
+
+.light {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #444;
+}
+
+/* Active Light States */
+.light.active.red {
+    background-color: #ff4444;
+    box-shadow: 0 0 20px #ff4444;
+}
+
+.light.active.yellow {
+    background-color: #ffeb3b;
+    box-shadow: 0 0 20px #ffeb3b;
+}
+
+.light.active.green {
+    background-color: #4caf50;
+    box-shadow: 0 0 20px #4caf50;
+}
+
+/* Stats Display */
+.stats {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.stats p {
+    margin: 0.25rem 0;
+}
+
+/* Recommendations */
+#recommendations-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.recommendation-item {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Congestion Level Indicators */
+.congestion-low {
+    color: #28a745;
+}
+
+.congestion-medium {
+    color: #ffc107;
+}
+
+.congestion-high {
+    color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .traffic-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .signal-container {
+        margin-bottom: 1rem;
+    }
+} 

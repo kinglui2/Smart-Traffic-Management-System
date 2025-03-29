@@ -1,0 +1,32 @@
+<!-- Emergency Vehicle Modal -->
+<div class="modal fade" id="emergencyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Emergency Vehicle Priority</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select the type of emergency vehicle to activate priority mode:</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-danger" onclick="confirmEmergencyMode('ambulance')">
+                        <i class="fas fa-ambulance"></i> Ambulance
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmEmergencyMode('fire_truck')">
+                        <i class="fas fa-truck"></i> Fire Truck
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmEmergencyMode('police')">
+                        <i class="fas fa-shield-alt"></i> Police Vehicle
+                    </button>
+                </div>
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Warning: This will override normal traffic signal patterns and set all signals to flashing yellow.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div> 
