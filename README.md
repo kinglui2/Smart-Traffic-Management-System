@@ -1,6 +1,129 @@
 # Smart Traffic Management System
 
-A real-time traffic management system that uses computer vision and machine learning to optimize traffic flow and handle emergency vehicle scenarios.
+A real-time traffic management system that uses computer vision and machine learning to optimize traffic flow and handle emergency vehicle scenarios. The system consists of two main components:
+
+1. A Python backend that handles:
+   - Real-time vehicle detection using YOLOv8
+   - Traffic signal control logic
+   - WebSocket communication
+   - Data processing and analytics
+
+2. A React frontend that provides:
+   - Real-time traffic monitoring dashboard
+   - Vehicle statistics and analytics
+   - Emergency vehicle controls
+   - Traffic signal management interface
+
+## Project Structure
+
+```
+Smart-Traffic-Management-System/
+├── backend/                 # Python backend service
+│   ├── src/                # Source code
+│   │   ├── traffic_control/    # Traffic control logic
+│   │   ├── vehicle_detection/  # YOLOv8 detection
+│   │   └── web_interface/      # Flask web server
+│   ├── config/             # Configuration files
+│   ├── data/              # Data files and models
+│   ├── tests/             # Test files
+│   ├── requirements.txt   # Python dependencies
+│   └── README.md          # Backend documentation
+│
+├── frontend/              # React frontend application
+│   ├── src/              # Source code
+│   │   ├── components/   # React components
+│   │   ├── App.js        # Main application
+│   │   └── index.js      # Entry point
+│   ├── public/           # Static files
+│   ├── package.json      # Node.js dependencies
+│   └── README.md         # Frontend documentation
+│
+└── README.md             # Main documentation
+```
+
+## Deployment
+
+The system is deployed in two parts:
+
+### Backend Deployment (Heroku/DigitalOcean)
+- Python Flask server
+- WebSocket support
+- ML model serving
+- Database integration
+
+### Frontend Deployment (Netlify)
+- Static site hosting
+- Environment configuration
+- Continuous deployment
+- SSL/TLS support
+
+## Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/Smart-Traffic-Management-System.git
+cd Smart-Traffic-Management-System
+```
+
+2. Set up the backend:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+3. Set up the frontend:
+```bash
+cd frontend
+npm install
+```
+
+4. Create necessary environment files:
+
+Backend (.env):
+```env
+FLASK_APP=src.web_interface.app
+FLASK_ENV=development
+MODEL_PATH=data/models/yolov8n.pt
+```
+
+Frontend (.env):
+```env
+REACT_APP_BACKEND_URL=http://localhost:5000
+```
+
+5. Start the development servers:
+
+Backend:
+```bash
+cd backend
+flask run
+```
+
+Frontend:
+```bash
+cd frontend
+npm start
+```
+
+## Documentation
+
+- [Backend Documentation](backend/README.md)
+- [Frontend Documentation](frontend/README.md)
+- [API Documentation](backend/docs/api.md)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Features
 
@@ -21,57 +144,6 @@ A real-time traffic management system that uses computer vision and machine lear
 - Flask-SocketIO
 - NumPy
 - Other dependencies listed in requirements.txt
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/Smart-Traffic-Management-System.git
-cd Smart-Traffic-Management-System
-```
-
-2. Create and activate a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Download the YOLOv8 model:
-```bash
-# The model will be downloaded automatically on first run
-```
-
-## Project Structure
-
-```
-Smart-Traffic-Management-System/
-├── src/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── config.py
-│   ├── traffic_monitor.py
-│   ├── car_detection.py
-│   └── traffic_control/
-│       ├── __init__.py
-│       └── signal_controller.py
-├── src/templates/
-│   ├── base.html
-│   ├── index.html
-│   └── emergency_modal.html
-├── src/static/
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       └── main.js
-├── logs/
-├── requirements.txt
-└── README.md
-```
 
 ## Configuration
 
@@ -131,18 +203,6 @@ Run tests using:
 ```bash
 python -m pytest tests/
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
